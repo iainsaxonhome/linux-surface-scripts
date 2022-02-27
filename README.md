@@ -24,5 +24,41 @@ ln -s /opt/scripts/autorotate /usr/local/bin/autorotate
 ln -s /opt/scripts/rotatescreen /usr/local/bin/rotatescreen
 ```
 
+## Onboard settings
+
+### General
+
+(Activate all options)
+
+### Window
+
+#### Transparency
+
+* Transparency
+  * Window: 10
+  * Background: 10 ([x] No Background)
+* When Inactive
+  * [x] set transparency to [50] after [1.0] seconds
+
+### Layout
+
+* Core layouts: Compact
+
+### Theme
+
+* High Contrast, Inverse
+
+### Keyboard
+
+#### Advanced
+
+* Input Options
+  * Touch input: single-touch
+  * Input event source: XInput
+* Key-stroke Generation
+  * Delay between keystrokes in milliseconds: 1
+  * Key-stroke generator: Auto
+
 **Note**
+
 Remember to install `menulibre` package to easily edit the menu.
