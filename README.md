@@ -23,3 +23,6 @@ sudo chmod u+x /opt/scripts/rotatescreen
 ln -s /opt/scripts/autorotate /usr/local/bin/autorotate
 ln -s /opt/scripts/rotatescreen /usr/local/bin/rotatescreen
 ```
+
+**Note**
+Remember to install `menulibre` package to easily edit the menu.
