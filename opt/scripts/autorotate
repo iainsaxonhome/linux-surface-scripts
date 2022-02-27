@@ -1,0 +1,83 @@
+#!/bin/sh
+#while true; do
+    #./rotate-screen
+    #sleep 2
+#done
+
+
+# Alternative method as the GDBUS not working properly
+#echo "" > /tmp/auto-rotate-sensor.log
+#killall monitor-sensor
+
+# Launch monitor-sensor and store the output in a variable that can be parsed by the rest of the script
+#monitor-sensor | grep orientation >> /tmp/auto-rotate-sensor.log 2>&1 &
+#monitor-sensor | grep orientation >> /tmp/auto-rotate-sensor.log
+
+# Parse output or monitor sensor to get the new orientation whenever the log file is updated
+# Possibles are: normal, bottom-up, right-up, left-up
+# Light data will be ignored
+#while inotifywait -e modify /tmp/auto-rotate-sensor.log; do
+
+# Read the last line that was added to the file and get the orientation
+    #ORIENTATION=$(tail -n 1 /tmp/auto-rotate-sensor.log | grep 'orientation' | grep -oE '[^ ]+$')
+
+    #echo "orientation: $ORIENTATION"
+
+    killall monitor-sensor
+   echo "" > /tmp/auto-rotate-sensor.log
+
+# Launch monitor-sensor and store the output in a variable that can be parsed by the rest of the script
+monitor-sensor >> /tmp/auto-rotate-sensor.log 2>&1 &
+#monitor-sensor | grep orientation >> /tmp/auto-rotate-sensor.log
+
+# Parse output or monitor sensor to get the new orientation whenever the log file is updated
+# Possibles are: normal, bottom-up, right-up, left-up
+# Light data will be ignored
+while inotifywait -e modify /tmp/auto-rotate-sensor.log; do
+
+# Read the last line that was added to the file and get the orientation
+    #ORIENTATION=$(tail -n 1 /tmp/auto-rotate-sensor.log | grep 'orientation' | grep -oE '[^ ]+$')
+
+    #echo "orientation: $ORIENTATION"
+
+
+# Set the actions to be taken for each possible orientation
+
+#monitor-sensor | grep orientation | grep -oE 'normal|inverted|left-up|right-up' >> /tmp/auto-rotate-sensor.log 2>&1 &
+#monitor-sensor | grep -oE 'normal|inverted|left-up|right-up' > /tmp/auto-rotate-sensor.log 
+
+    #ORIENTATION=$1
+    ORIENTATION=$(tail -n 40 /tmp/auto-rotate-sensor.log | tac | grep -oE -m 1 'normal|bottom-up|left-up|right-up')
+    echo "orientation: $ORIENTATION"
+
+    case "$ORIENTATION" in
+	normal)
+	    #xrandr --output DSI1 --rotate normal && gsettings set com.canonical.Unity.Launcher launcher-position Left ;;
+	    echo "is normal"
+	    rotatescreen normal
+	    ;;
+
+	bottom-up)
+	    #xrandr --output DSI1 --rotate inverted && gsettings set com.canonical.Unity.Launcher launcher-position Left ;;
+	    echo "is inverted"
+	    rotatescreen inverted
+	    ;;
+
+	right-up)
+	    #xrandr --output DSI1 --rotate right && gsettings set com.canonical.Unity.Launcher launcher-position Bottom ;;
+	    echo "is right"
+	    rotatescreen right
+	    ;;
+
+	left-up)
+	    #xrandr --output DSI1 --rotate left && gsettings set com.canonical.Unity.Launcher launcher-position Bottom ;;
+	    echo "is left"
+	    rotatescreen left
+	    ;;
+
+    esac
+
+    echo "" > /tmp/auto-rotate-sensor.log
+
+    sleep 4
+done
